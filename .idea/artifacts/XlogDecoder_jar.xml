@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="XlogDecoder:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/XlogDecoder_jar</output-path>
+    <root id="archive" name="XlogDecoder.jar">
+      <element id="module-output" name="XlogDecoder" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/bcprov-jdk15on-159.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
