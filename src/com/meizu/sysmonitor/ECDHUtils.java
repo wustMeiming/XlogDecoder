@@ -30,7 +30,7 @@ public class ECDHUtils {
     public static PrivateKey loadPrivateKey(byte[] data) throws Exception {
         PrivateKey key;
         ECParameterSpec params = ECNamedCurveTable.getParameterSpec("secp256k1");
-        ECPrivateKeySpec prvkey = new ECPrivateKeySpec(new BigInteger(data), params);
+        ECPrivateKeySpec prvkey = new ECPrivateKeySpec(new BigInteger(1, data), params);
         KeyFactory kf = KeyFactory.getInstance("ECDH", "BC");
         return kf.generatePrivate(prvkey);
     }
