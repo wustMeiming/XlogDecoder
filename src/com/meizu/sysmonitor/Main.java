@@ -14,11 +14,15 @@ public class Main {
             outfile = args[1];
         }
         //TODO type your private key
-        XlogFileDecoder.PRIV_KEY = "";
-        XlogFileDecoder.PRIV_KEY = System.getenv("XLOG_PRIV_KEY");
+        String xlogPrivKey = System.getenv("XLOG_PRIV_KEY");
+        if (xlogPrivKey != null) {
+            XlogFileDecoder.PRIV_KEY = xlogPrivKey;
+        }
         //TODO type your public key
-        XlogFileDecoder.PUB_KEY = "";
-        XlogFileDecoder.PUB_KEY = System.getenv("XLOG_PUB_KEY");
+        String xlogPubKey = System.getenv("XLOG_PUB_KEY");
+        if (xlogPubKey != null) {
+            XlogFileDecoder.PUB_KEY = xlogPubKey;
+        }
         XlogFileDecoder.ParseFile(infile, outfile);
     }
 }
