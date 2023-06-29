@@ -25,10 +25,12 @@ public class XlogFileDecoder {
 
     public static byte MAGIC_END = 0x00;
 
-    public static String PRIV_KEY = "145aa7717bf9745b91e9569b80bbf1eedaa6cc6cd0e26317d810e35710f44cf8";
-    public static String PUB_KEY = "572d1e2710ae5fbca54c76a382fdd44050b3a675cb2bf39feebe85ef63d947aff0fa4943f1112e8b6af34bebebbaefa1a0aae055d9259b89a1858f7cc9af9df1";
+    //TODO using your own private key
+    public static String PRIV_KEY = "";
+    //TODO: using your own public key
+    public static String PUB_KEY = "";
 
-    public static byte[] BYTE_PRIV_KEY = CommonUtils.hexStringToBytes(PRIV_KEY);
+    //public static byte[] BYTE_PRIV_KEY = CommonUtils.hexStringToBytes(PRIV_KEY);
 
     static {
         ECDHUtils.init();
@@ -164,7 +166,8 @@ public class XlogFileDecoder {
                 String pubkey = String.format("04%s%s", pubkey_x, pubkey_y);
 
 
-                byte[] tea_key = ECDHUtils.GetECDHKey(CommonUtils.hexStringToByteArray(pubkey), BYTE_PRIV_KEY);
+                //byte[] tea_key = ECDHUtils.GetECDHKey(CommonUtils.hexStringToByteArray(pubkey), BYTE_PRIV_KEY);
+                byte[] tea_key = ECDHUtils.GetECDHKey(CommonUtils.hexStringToByteArray(pubkey), getByteOfPrivKey());
 
                 tmpbuffer = CommonUtils.tea_decrypt(tmpbuffer, tea_key);
 
@@ -189,6 +192,10 @@ public class XlogFileDecoder {
 
         retData.startpos = _offset + headerLen + length + 1;
         return retData;
+    }
+
+    private static byte[] getByteOfPrivKey() {
+        return CommonUtils.hexStringToBytes(PRIV_KEY);
     }
 
     public static void ParseFile(String _file, String _outfile){
