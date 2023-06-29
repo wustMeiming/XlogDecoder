@@ -19,5 +19,13 @@ java -jar XlogDecoder.jar text.xlog
 
 就可以解码xlog日志文件了
 
+## 更新日志
+
+* 新增convertStream方法，把inputStream，转换成outStream 【使用场景，流数据处理】
+```java 
+public static void convertStream(InputStream inStream, OutputStream ost) 
+```
+
+
 ### 友情链接
 微信Mars库源码 [https://github.com/Tencent/mars/](!https://github.com/Tencent/mars/)

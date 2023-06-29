@@ -261,4 +261,65 @@ public class XlogFileDecoder {
             }
         }
     }
+
+
+
+    public static void convertStream(InputStream inStream, OutputStream ost) {
+
+        DataInputStream dis = null;
+
+        OutputStreamWriter writer = null;
+        BufferedWriter bw = null;
+        try {
+            //创建输入流
+            dis = new DataInputStream(inStream);
+
+            byte[] _buffer = new byte[dis.available()];
+
+            dis.readFully(_buffer);
+
+            int startpos = GetLogStartPos(_buffer, 2);
+
+            if (-1 == startpos){
+                return;
+            }
+
+            StringBuffer outbuffer = new StringBuffer();
+
+            RetData retData = new RetData(startpos, 0);
+            while (true){
+                System.out.println(retData.startpos+":"+retData.lastseq);
+                retData = DecodeBuffer(_buffer, retData.startpos, retData.lastseq, outbuffer);
+                if (-1 == retData.startpos) break;
+            }
+
+            if (0 == outbuffer.length()) return;
+
+            writer = new OutputStreamWriter(ost);
+            bw = new BufferedWriter(writer);
+            bw.write(outbuffer.toString());
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                if (dis!=null) {
+                    dis.close();
+                }
+                if (ost!=null){
+                    ost.flush();
+                    ost.close();
+                }
+                if (writer!=null){
+                    writer.close();
+                }
+                if (bw!=null){
+                    bw.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
