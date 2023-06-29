@@ -13,6 +13,16 @@ public class Main {
         }else {
             outfile = args[1];
         }
+        //TODO type your private key
+        String xlogPrivKey = System.getenv("XLOG_PRIV_KEY");
+        if (xlogPrivKey != null) {
+            XlogFileDecoder.PRIV_KEY = xlogPrivKey;
+        }
+        //TODO type your public key
+        String xlogPubKey = System.getenv("XLOG_PUB_KEY");
+        if (xlogPubKey != null) {
+            XlogFileDecoder.PUB_KEY = xlogPubKey;
+        }
         XlogFileDecoder.ParseFile(infile, outfile);
     }
 }

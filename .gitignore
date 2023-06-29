@@ -1,2 +1,4 @@
 out
 .idea/workspace.xml
+*.xlog
+.idea/

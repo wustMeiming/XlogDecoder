@@ -25,10 +25,12 @@ public class XlogFileDecoder {
 
     public static byte MAGIC_END = 0x00;
 
+    //TODO using your own private key
     public static String PRIV_KEY = "145aa7717bf9745b91e9569b80bbf1eedaa6cc6cd0e26317d810e35710f44cf8";
+    //TODO: using your own public key
     public static String PUB_KEY = "572d1e2710ae5fbca54c76a382fdd44050b3a675cb2bf39feebe85ef63d947aff0fa4943f1112e8b6af34bebebbaefa1a0aae055d9259b89a1858f7cc9af9df1";
 
-    public static byte[] BYTE_PRIV_KEY = CommonUtils.hexStringToBytes(PRIV_KEY);
+    //public static byte[] BYTE_PRIV_KEY = CommonUtils.hexStringToBytes(PRIV_KEY);
 
     static {
         ECDHUtils.init();
@@ -164,7 +166,8 @@ public class XlogFileDecoder {
                 String pubkey = String.format("04%s%s", pubkey_x, pubkey_y);
 
 
-                byte[] tea_key = ECDHUtils.GetECDHKey(CommonUtils.hexStringToByteArray(pubkey), BYTE_PRIV_KEY);
+                //byte[] tea_key = ECDHUtils.GetECDHKey(CommonUtils.hexStringToByteArray(pubkey), BYTE_PRIV_KEY);
+                byte[] tea_key = ECDHUtils.GetECDHKey(CommonUtils.hexStringToByteArray(pubkey), getByteOfPrivKey());
 
                 tmpbuffer = CommonUtils.tea_decrypt(tmpbuffer, tea_key);
 
@@ -189,6 +192,10 @@ public class XlogFileDecoder {
 
         retData.startpos = _offset + headerLen + length + 1;
         return retData;
+    }
+
+    private static byte[] getByteOfPrivKey() {
+        return CommonUtils.hexStringToBytes(PRIV_KEY);
     }
 
     public static void ParseFile(String _file, String _outfile){
@@ -242,6 +249,67 @@ public class XlogFileDecoder {
                 }
                 if (os!=null){
                     os.close();
+                }
+                if (writer!=null){
+                    writer.close();
+                }
+                if (bw!=null){
+                    bw.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+    public static void convertStream(InputStream inStream, OutputStream ost) {
+
+        DataInputStream dis = null;
+
+        OutputStreamWriter writer = null;
+        BufferedWriter bw = null;
+        try {
+            //创建输入流
+            dis = new DataInputStream(inStream);
+
+            byte[] _buffer = new byte[dis.available()];
+
+            dis.readFully(_buffer);
+
+            int startpos = GetLogStartPos(_buffer, 2);
+
+            if (-1 == startpos){
+                return;
+            }
+
+            StringBuffer outbuffer = new StringBuffer();
+
+            RetData retData = new RetData(startpos, 0);
+            while (true){
+                System.out.println(retData.startpos+":"+retData.lastseq);
+                retData = DecodeBuffer(_buffer, retData.startpos, retData.lastseq, outbuffer);
+                if (-1 == retData.startpos) break;
+            }
+
+            if (0 == outbuffer.length()) return;
+
+            writer = new OutputStreamWriter(ost);
+            bw = new BufferedWriter(writer);
+            bw.write(outbuffer.toString());
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                if (dis!=null) {
+                    dis.close();
+                }
+                if (ost!=null){
+                    ost.flush();
+                    ost.close();
                 }
                 if (writer!=null){
                     writer.close();
